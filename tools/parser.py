@@ -97,6 +97,7 @@ def read_args():
     # datasets
     parser.add_argument("--multi_endpoints", type=int, default=1)
     parser.add_argument("--path_type", type=str, default="trusted_path", choices=["planner_path", "trusted_path"])
+    parser.add_argument('--jsonpath', type=str, default=None, help="direct jsonpath to data")
 
     # evaluation
     parser.add_argument('--test_datasets', type=str, default=None, nargs='+')

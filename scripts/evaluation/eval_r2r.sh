@@ -9,9 +9,10 @@
 # activate environment
 # conda activate navillm
 
-torchrun --nnodes=1 --nproc_per_node=8 --master_port 41000 train.py \
+torchrun --nnodes=1 --nproc_per_node=4 --master_port 41000 train.py \
     --stage multi --mode test --data_dir data --cfg_file configs/multi.yaml \
     --pretrained_model_name_or_path data/models/Vicuna-7B --precision amp_bf16 \
-    --resume_from_checkpoint $model_path \
+    --resume_from_checkpoint data/model_with_pretrain.pt \
     --test_datasets R2R \
-    --batch_size 4 --output_dir build/eval --validation_split test --save_pred_results
+    --jsonpath data/R2R/R2R_val_unseen_enc.json \
+    --batch_size 4 --output_dir build/eval --validation_split val_unseen --save_pred_results

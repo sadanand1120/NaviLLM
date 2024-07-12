@@ -2,6 +2,8 @@ import os
 import json
 import torch
 import random
+import numpy as np
+np.int = np.int32
 from tqdm import tqdm
 from pathlib import Path
 from typing import Dict

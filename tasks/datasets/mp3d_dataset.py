@@ -51,7 +51,7 @@ class MP3DDataset(BaseDataset):
         self.connectivity_dir = str(args.data_dir/'connectivity')
 
         # load mp3d dataset
-        msg = self._load_data(config, args.data_dir)
+        msg = self._load_data(config, args.data_dir, args.jsonpath)
         self.buffered_state_dict = {}
 
         # simulator
@@ -73,12 +73,15 @@ class MP3DDataset(BaseDataset):
         self.feat_db = feat_db
         self.obj_feat_db = obj_feat_db
 
-    def _load_data(self, config, data_dir):
+    def _load_data(self, config, data_dir, jsonpath=None):
         self.data = dict()
         self.alldata = []
         msg = ""
         if self.source == "R2R":
-            anno_file = get_anno_file_path(data_dir, config.R2R.DIR, config.R2R.SPLIT[self.split])
+            if jsonpath is None:
+                anno_file = get_anno_file_path(data_dir, config.R2R.DIR, config.R2R.SPLIT[self.split])
+            else:
+                anno_file = Path(jsonpath)
             self.data['r2r'], self.gt_trajs = self.load_data(anno_file=anno_file, debug=self.debug)
             msg += '\n- Dataset: load {} R2R samples'.format(len(self.data['r2r']))
         elif self.source == "REVERIE":
