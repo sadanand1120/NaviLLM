@@ -1,0 +1,558 @@
+2024-07-12 07:10:45,319   INFO  **********************Start logging**********************
+2024-07-12 07:10:45,319   INFO  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+2024-07-12 07:10:45,319   INFO  data_dir         /root/mount/Matterport3DSimulator/thirdparty/NaviLLM/data
+2024-07-12 07:10:45,320   INFO  cfg_file         configs/multi.yaml
+2024-07-12 07:10:45,320   INFO  pretrained_model_name_or_path data/models/Vicuna-7B
+2024-07-12 07:10:45,320   INFO  off_batch_task   False
+2024-07-12 07:10:45,320   INFO  debug            False
+2024-07-12 07:10:45,320   INFO  seed             0
+2024-07-12 07:10:45,320   INFO  num_epochs       30
+2024-07-12 07:10:45,321   INFO  resume_from_checkpoint data/model_with_pretrain.pt
+2024-07-12 07:10:45,321   INFO  from_scratch     False
+2024-07-12 07:10:45,330   INFO  batch_size       4
+2024-07-12 07:10:45,330   INFO  val_batch_size   2
+2024-07-12 07:10:45,331   INFO  lr               1e-05
+2024-07-12 07:10:45,331   INFO  feat_dropout     0.4
+2024-07-12 07:10:45,331   INFO  num_warmup_steps 0
+2024-07-12 07:10:45,341   INFO  num_steps_per_epoch -1
+2024-07-12 07:10:45,341   INFO  gradient_accumulation_step 2
+2024-07-12 07:10:45,341   INFO  precision        amp_bf16
+2024-07-12 07:10:45,341   INFO  workers          0
+2024-07-12 07:10:45,342   INFO  world_size       8
+2024-07-12 07:10:45,342   INFO  local_rank       0
+2024-07-12 07:10:45,342   INFO  dist_url         env://
+2024-07-12 07:10:45,342   INFO  dist_backend     nccl
+2024-07-12 07:10:45,342   INFO  horovod          False
+2024-07-12 07:10:45,342   INFO  no_set_device_rank False
+2024-07-12 07:10:45,342   INFO  output_dir       build/eval
+2024-07-12 07:10:45,343   INFO  max_saved_checkpoints 0
+2024-07-12 07:10:45,343   INFO  save_ckpt_per_epochs 10
+2024-07-12 07:10:45,343   INFO  save_latest_states False
+2024-07-12 07:10:45,343   INFO  save_pred_results True
+2024-07-12 07:10:45,343   INFO  save_detail_results False
+2024-07-12 07:10:45,343   INFO  mode             test
+2024-07-12 07:10:45,343   INFO  stage            multi
+2024-07-12 07:10:45,343   INFO  ignoreid         -100
+2024-07-12 07:10:45,343   INFO  enable_og        False
+2024-07-12 07:10:45,343   INFO  enable_summarize False
+2024-07-12 07:10:45,343   INFO  enable_fgr2r     False
+2024-07-12 07:10:45,344   INFO  gen_loss_coef    1.0
+2024-07-12 07:10:45,344   INFO  obj_loss_coef    1.0
+2024-07-12 07:10:45,344   INFO  teacher_forcing_coef 1.0
+2024-07-12 07:10:45,344   INFO  fuse_obj         False
+2024-07-12 07:10:45,344   INFO  multi_endpoints  1
+2024-07-12 07:10:45,344   INFO  path_type        trusted_path
+2024-07-12 07:10:45,344   INFO  jsonpath         ../../tasks/R2R/data/R2R_train_enc.json
+2024-07-12 07:10:45,344   INFO  test_datasets    ['R2R']
+2024-07-12 07:10:45,344   INFO  validation_split train
+2024-07-12 07:10:45,344   INFO  do_sample        False
+2024-07-12 07:10:45,345   INFO  temperature      1.0
+2024-07-12 07:10:45,345   INFO  max_datapoints   None
+2024-07-12 07:10:45,345   INFO  rank             0
+2024-07-12 07:10:45,345   INFO  distributed      True
+2024-07-12 07:10:45,345   INFO  device           cuda:0
+2024-07-12 07:10:45,345   INFO  image_feat_size  1024
+2024-07-12 07:10:45,345   INFO  obj_feat_size    768
+2024-07-12 07:10:45,345   INFO  angle_feat_size  4
+2024-07-12 07:10:45,345   INFO  enc_full_graph   True
+2024-07-12 07:10:45,345   INFO  expert_policy    spl
+2024-07-12 07:10:45,345   INFO  num_pano_layers  2
+2024-07-12 07:10:45,346   INFO  ----------- Feature -----------
+2024-07-12 07:10:45,346   INFO  cfg.Feature.object_feature_type: 
+2024-07-12 07:10:45,346   INFO  cfg.Feature.angle_feat_size: 4
+2024-07-12 07:10:45,346   INFO  cfg.Feature.max_objects: 70
+2024-07-12 07:10:45,346   INFO  cfg.Feature.image_feat_size: 1024
+2024-07-12 07:10:45,346   INFO  ----------- feature_database -----------
+2024-07-12 07:10:45,346   INFO  cfg.Feature.feature_database.mp3d: eva_features/mp3d_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:10:45,346   INFO  cfg.Feature.feature_database.scan_qa: eva_features/scanqa_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:10:45,346   INFO  cfg.Feature.feature_database.coco: eva_features/coco_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:10:45,346   INFO  cfg.Feature.obj_feat_size: 768
+2024-07-12 07:10:45,347   INFO  ----------- object_database -----------
+2024-07-12 07:10:45,347   INFO  cfg.Feature.object_database.reverie: obj_features/reverie_obj_feat
+2024-07-12 07:10:45,347   INFO  cfg.Feature.object_database.soon: obj_features/soon_obj_feat
+2024-07-12 07:10:45,347   INFO  ----------- Dataset -----------
+2024-07-12 07:10:45,347   INFO  ----------- R2R -----------
+2024-07-12 07:10:45,347   INFO  cfg.Dataset.R2R.DIR: R2R
+2024-07-12 07:10:45,347   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,347   INFO  cfg.Dataset.R2R.SPLIT.train: FGR2R_train.json
+2024-07-12 07:10:45,347   INFO  cfg.Dataset.R2R.SPLIT.val_seen: R2R_val_seen_enc.json
+2024-07-12 07:10:45,347   INFO  cfg.Dataset.R2R.SPLIT.val_unseen: R2R_val_unseen_enc.json
+2024-07-12 07:10:45,347   INFO  cfg.Dataset.R2R.SPLIT.test: R2R_test_enc.json
+2024-07-12 07:10:45,348   INFO  ----------- REVERIE -----------
+2024-07-12 07:10:45,348   INFO  cfg.Dataset.REVERIE.DIR: REVERIE
+2024-07-12 07:10:45,348   INFO  cfg.Dataset.REVERIE.bbox_file: BBoxes.json
+2024-07-12 07:10:45,348   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,348   INFO  cfg.Dataset.REVERIE.SPLIT.train: REVERIE_train_enc.json
+2024-07-12 07:10:45,348   INFO  cfg.Dataset.REVERIE.SPLIT.val_seen: REVERIE_val_seen_enc.json
+2024-07-12 07:10:45,348   INFO  cfg.Dataset.REVERIE.SPLIT.val_unseen: REVERIE_val_unseen_enc.json
+2024-07-12 07:10:45,348   INFO  cfg.Dataset.REVERIE.SPLIT.test: REVERIE_test_enc.json
+2024-07-12 07:10:45,348   INFO  ----------- CVDN -----------
+2024-07-12 07:10:45,349   INFO  cfg.Dataset.CVDN.DIR: CVDN
+2024-07-12 07:10:45,349   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,349   INFO  cfg.Dataset.CVDN.SPLIT.train: train.json
+2024-07-12 07:10:45,349   INFO  cfg.Dataset.CVDN.SPLIT.val_seen: val_seen.json
+2024-07-12 07:10:45,349   INFO  cfg.Dataset.CVDN.SPLIT.val_unseen: val_unseen.json
+2024-07-12 07:10:45,349   INFO  cfg.Dataset.CVDN.SPLIT.test: test_cleaned.json
+2024-07-12 07:10:45,349   INFO  ----------- SOON -----------
+2024-07-12 07:10:45,349   INFO  cfg.Dataset.SOON.DIR: SOON
+2024-07-12 07:10:45,349   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,350   INFO  cfg.Dataset.SOON.SPLIT.train: train_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:10:45,359   INFO  cfg.Dataset.SOON.SPLIT.val_seen: val_unseen_instrs_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:10:45,359   INFO  cfg.Dataset.SOON.SPLIT.val_unseen: val_unseen_house_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:10:45,359   INFO  cfg.Dataset.SOON.SPLIT.test: test_v2_enc.jsonl
+2024-07-12 07:10:45,359   INFO  ----------- ScanQA -----------
+2024-07-12 07:10:45,359   INFO  cfg.Dataset.ScanQA.DIR: ScanQA
+2024-07-12 07:10:45,359   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,359   INFO  cfg.Dataset.ScanQA.SPLIT.train: ScanQA_v1.0_train_reformat.json
+2024-07-12 07:10:45,360   INFO  cfg.Dataset.ScanQA.SPLIT.val_unseen: ScanQA_v1.0_val_reformat.json
+2024-07-12 07:10:45,360   INFO  cfg.Dataset.ScanQA.SPLIT.test_wo_obj: ScanQA_v1.0_test_wo_obj_reformat.json
+2024-07-12 07:10:45,360   INFO  cfg.Dataset.ScanQA.SPLIT.test_w_obj: ScanQA_v1.0_test_w_obj_reformat.json
+2024-07-12 07:10:45,360   INFO  ----------- EQA -----------
+2024-07-12 07:10:45,360   INFO  cfg.Dataset.EQA.DIR: EQA_MP3D
+2024-07-12 07:10:45,360   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,360   INFO  cfg.Dataset.EQA.SPLIT.val_unseen: eqa_val_enc.json
+2024-07-12 07:10:45,360   INFO  cfg.Dataset.EQA.ANSWER_VOCAB: eqa_answer_vocab.json
+2024-07-12 07:10:45,361   INFO  ----------- R2R_AUG -----------
+2024-07-12 07:10:45,361   INFO  cfg.Dataset.R2R_AUG.DIR: R2R
+2024-07-12 07:10:45,361   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,361   INFO  cfg.Dataset.R2R_AUG.SPLIT.train: R2R_prevalent_aug_train_enc.jsonl
+2024-07-12 07:10:45,361   INFO  ----------- REVERIE_AUG -----------
+2024-07-12 07:10:45,361   INFO  cfg.Dataset.REVERIE_AUG.DIR: REVERIE
+2024-07-12 07:10:45,361   INFO  cfg.Dataset.REVERIE_AUG.bbox_file: BBoxes.json
+2024-07-12 07:10:45,361   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,362   INFO  cfg.Dataset.REVERIE_AUG.SPLIT.train: REVERIE_speaker_aug_enc.jsonl
+2024-07-12 07:10:45,362   INFO  ----------- LLaVA -----------
+2024-07-12 07:10:45,362   INFO  cfg.Dataset.LLaVA.DIR: LLaVA
+2024-07-12 07:10:45,362   INFO  ----------- SPLIT -----------
+2024-07-12 07:10:45,362   INFO  cfg.Dataset.LLaVA.SPLIT.train: detail_23k.json
+2024-07-12 07:10:45,362   INFO  ----------- Pretrain -----------
+2024-07-12 07:10:45,362   INFO  cfg.Pretrain.SOURCE: ['R2R_AUG', 'REVERIE_AUG', 'R2R', 'REVERIE', 'SOON', 'CVDN', 'ScanQA']
+2024-07-12 07:10:45,362   INFO  cfg.Pretrain.Ratio: [20, 2, 1, 1, 1, 1, 1]
+2024-07-12 07:10:45,363   INFO  ----------- LOSS_COEF -----------
+2024-07-12 07:10:45,363   INFO  cfg.Pretrain.LOSS_COEF.R2R_AUG: 1
+2024-07-12 07:10:45,363   INFO  cfg.Pretrain.LOSS_COEF.REVERIE_AUG: 1
+2024-07-12 07:10:45,363   INFO  ----------- Multi -----------
+2024-07-12 07:10:45,363   INFO  cfg.Multi.SOURCE: ['R2R', 'REVERIE', 'CVDN', 'SOON', 'ScanQA', 'LLaVA']
+2024-07-12 07:10:45,363   INFO  cfg.Multi.Ratio: [20, 5, 1, 5, 5, 5]
+2024-07-12 07:10:45,363   INFO  ----------- LOSS_COEF -----------
+2024-07-12 07:10:45,363   INFO  ----------- Model -----------
+2024-07-12 07:10:45,363   INFO  cfg.Model.num_l_layers: 9
+2024-07-12 07:10:45,364   INFO  cfg.Model.num_pano_layers: 2
+2024-07-12 07:10:45,364   INFO  cfg.Model.num_x_layers: 4
+2024-07-12 07:10:45,364   INFO  cfg.Model.graph_sprels: True
+2024-07-12 07:10:45,364   INFO  cfg.Model.fusion: dynamic
+2024-07-12 07:10:45,364   INFO  cfg.Model.enc_full_graph: True
+2024-07-12 07:10:45,364   INFO  cfg.Model.expert_policy: spl
+2024-07-12 07:10:45,364   INFO  ----------- Optim -----------
+2024-07-12 07:10:45,364   INFO  ----------- val_max_action_len -----------
+2024-07-12 07:10:45,365   INFO  cfg.Optim.val_max_action_len.R2R: 15
+2024-07-12 07:10:45,365   INFO  cfg.Optim.val_max_action_len.REVERIE: 15
+2024-07-12 07:10:45,365   INFO  cfg.Optim.val_max_action_len.CVDN: 30
+2024-07-12 07:10:45,365   INFO  cfg.Optim.val_max_action_len.SOON: 20
+2024-07-12 07:10:45,365   INFO  cfg.Optim.val_max_action_len.EQA: 15
+2024-07-12 07:10:45,365   INFO  ----------- train_max_action_len -----------
+2024-07-12 07:10:45,365   INFO  cfg.Optim.train_max_action_len.R2R: 15
+2024-07-12 07:10:45,365   INFO  cfg.Optim.train_max_action_len.REVERIE: 15
+2024-07-12 07:10:45,365   INFO  cfg.Optim.train_max_action_len.CVDN: 15
+2024-07-12 07:10:45,365   INFO  cfg.Optim.train_max_action_len.SOON: 15
+2024-07-12 07:10:45,366   INFO  cfg.Optim.train_max_action_len.EQA: 15
+2024-07-12 07:10:45,366   INFO  cfg.Optim.train_max_action_len.R2R_AUG: 15
+2024-07-12 07:10:45,366   INFO  cfg.Optim.train_max_action_len.REVERIE_AUG: 15
+2024-07-12 07:10:52,683   INFO  [INFO] R2RDataset loaded with 14039 instructions, using splits: train
+2024-07-12 07:10:52,683   INFO  
+- Dataset: load 14039 R2R samples
+- Dataset: load train split: 14039 samples in total
+- Dataset: load train split: 61 scans in total
+2024-07-12 07:10:52,684   INFO  R2R: 14039 samples loaded
+2024-07-12 07:10:52,793   INFO  Initialize the model from config.
+2024-07-12 07:12:21,685   INFO  model type: torch.bfloat16
+2024-07-12 07:12:21,685   INFO  *************** init model *************** 
+2024-07-12 07:12:29,534   INFO  Loading checkpoint from data/model_with_pretrain.pt
+2024-07-12 07:12:35,944   INFO  Ignore weight img_embeddings.obj_projector.0.weight: torch.Size([4096, 768])
+2024-07-12 07:12:35,944   INFO  Ignore weight img_embeddings.obj_projector.0.bias: torch.Size([4096])
+2024-07-12 07:12:35,944   INFO  Ignore weight img_embeddings.obj_projector.1.weight: torch.Size([4096])
+2024-07-12 07:12:35,944   INFO  Ignore weight img_embeddings.obj_projector.1.bias: torch.Size([4096])
+2024-07-12 07:12:37,286   INFO  <All keys matched successfully>
+2024-07-12 07:12:37,756   INFO  model initialized with 6770.32 M trainable parameters
+2024-07-12 07:12:41,530   INFO  Training in distributed mode : total_batch_size: 32
+2024-07-12 07:12:41,530   INFO  **************************** Test ****************************
+2024-07-12 07:12:41,531   INFO  ***** validate train split on R2R task *****
+2024-07-12 07:24:54,274   INFO  eval 14040 predictions
+2024-07-12 07:24:54,793   INFO  
+[Eval] train epoch 0
+
+ [Eval] dataset=[R2R] 
+, action_steps: 5.25, steps: 5.46, lengths: 10.79, nav_error: 0.58, oracle_error: 0.25
+[Eval] ||| sr: 94.37, oracle_sr: 97.54, spl: 92.21
+2024-07-12 07:28:25,794   INFO  **********************Start logging**********************
+2024-07-12 07:28:25,794   INFO  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+2024-07-12 07:28:25,794   INFO  data_dir         /root/mount/Matterport3DSimulator/thirdparty/NaviLLM/data
+2024-07-12 07:28:25,794   INFO  cfg_file         configs/multi.yaml
+2024-07-12 07:28:25,794   INFO  pretrained_model_name_or_path data/models/Vicuna-7B
+2024-07-12 07:28:25,795   INFO  off_batch_task   False
+2024-07-12 07:28:25,795   INFO  debug            False
+2024-07-12 07:28:25,795   INFO  seed             0
+2024-07-12 07:28:25,795   INFO  num_epochs       30
+2024-07-12 07:28:25,795   INFO  resume_from_checkpoint data/model_with_pretrain.pt
+2024-07-12 07:28:25,795   INFO  from_scratch     False
+2024-07-12 07:28:25,796   INFO  batch_size       4
+2024-07-12 07:28:25,796   INFO  val_batch_size   2
+2024-07-12 07:28:25,796   INFO  lr               1e-05
+2024-07-12 07:28:25,796   INFO  feat_dropout     0.4
+2024-07-12 07:28:25,796   INFO  num_warmup_steps 0
+2024-07-12 07:28:25,796   INFO  num_steps_per_epoch -1
+2024-07-12 07:28:25,797   INFO  gradient_accumulation_step 2
+2024-07-12 07:28:25,797   INFO  precision        amp_bf16
+2024-07-12 07:28:25,797   INFO  workers          0
+2024-07-12 07:28:25,797   INFO  world_size       8
+2024-07-12 07:28:25,797   INFO  local_rank       0
+2024-07-12 07:28:25,797   INFO  dist_url         env://
+2024-07-12 07:28:25,797   INFO  dist_backend     nccl
+2024-07-12 07:28:25,797   INFO  horovod          False
+2024-07-12 07:28:25,797   INFO  no_set_device_rank False
+2024-07-12 07:28:25,797   INFO  output_dir       build/eval
+2024-07-12 07:28:25,797   INFO  max_saved_checkpoints 0
+2024-07-12 07:28:25,797   INFO  save_ckpt_per_epochs 10
+2024-07-12 07:28:25,797   INFO  save_latest_states False
+2024-07-12 07:28:25,797   INFO  save_pred_results True
+2024-07-12 07:28:25,797   INFO  save_detail_results False
+2024-07-12 07:28:25,797   INFO  mode             test
+2024-07-12 07:28:25,798   INFO  stage            multi
+2024-07-12 07:28:25,798   INFO  ignoreid         -100
+2024-07-12 07:28:25,798   INFO  enable_og        False
+2024-07-12 07:28:25,798   INFO  enable_summarize False
+2024-07-12 07:28:25,798   INFO  enable_fgr2r     False
+2024-07-12 07:28:25,798   INFO  gen_loss_coef    1.0
+2024-07-12 07:28:25,798   INFO  obj_loss_coef    1.0
+2024-07-12 07:28:25,798   INFO  teacher_forcing_coef 1.0
+2024-07-12 07:28:25,798   INFO  fuse_obj         False
+2024-07-12 07:28:25,798   INFO  multi_endpoints  1
+2024-07-12 07:28:25,798   INFO  path_type        trusted_path
+2024-07-12 07:28:25,798   INFO  jsonpath         ../../tasks/R2R/data/R2R_val_seen_enc.json
+2024-07-12 07:28:25,798   INFO  test_datasets    ['R2R']
+2024-07-12 07:28:25,798   INFO  validation_split val_seen
+2024-07-12 07:28:25,798   INFO  do_sample        False
+2024-07-12 07:28:25,798   INFO  temperature      1.0
+2024-07-12 07:28:25,798   INFO  max_datapoints   None
+2024-07-12 07:28:25,798   INFO  rank             0
+2024-07-12 07:28:25,798   INFO  distributed      True
+2024-07-12 07:28:25,799   INFO  device           cuda:0
+2024-07-12 07:28:25,799   INFO  image_feat_size  1024
+2024-07-12 07:28:25,799   INFO  obj_feat_size    768
+2024-07-12 07:28:25,799   INFO  angle_feat_size  4
+2024-07-12 07:28:25,799   INFO  enc_full_graph   True
+2024-07-12 07:28:25,799   INFO  expert_policy    spl
+2024-07-12 07:28:25,799   INFO  num_pano_layers  2
+2024-07-12 07:28:25,799   INFO  ----------- Feature -----------
+2024-07-12 07:28:25,799   INFO  cfg.Feature.object_feature_type: 
+2024-07-12 07:28:25,799   INFO  cfg.Feature.angle_feat_size: 4
+2024-07-12 07:28:25,799   INFO  cfg.Feature.max_objects: 70
+2024-07-12 07:28:25,799   INFO  cfg.Feature.image_feat_size: 1024
+2024-07-12 07:28:25,799   INFO  ----------- feature_database -----------
+2024-07-12 07:28:25,799   INFO  cfg.Feature.feature_database.mp3d: eva_features/mp3d_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:28:25,799   INFO  cfg.Feature.feature_database.scan_qa: eva_features/scanqa_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:28:25,799   INFO  cfg.Feature.feature_database.coco: eva_features/coco_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:28:25,799   INFO  cfg.Feature.obj_feat_size: 768
+2024-07-12 07:28:25,800   INFO  ----------- object_database -----------
+2024-07-12 07:28:25,800   INFO  cfg.Feature.object_database.reverie: obj_features/reverie_obj_feat
+2024-07-12 07:28:25,800   INFO  cfg.Feature.object_database.soon: obj_features/soon_obj_feat
+2024-07-12 07:28:25,800   INFO  ----------- Dataset -----------
+2024-07-12 07:28:25,800   INFO  ----------- R2R -----------
+2024-07-12 07:28:25,800   INFO  cfg.Dataset.R2R.DIR: R2R
+2024-07-12 07:28:25,800   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,800   INFO  cfg.Dataset.R2R.SPLIT.train: FGR2R_train.json
+2024-07-12 07:28:25,800   INFO  cfg.Dataset.R2R.SPLIT.val_seen: R2R_val_seen_enc.json
+2024-07-12 07:28:25,800   INFO  cfg.Dataset.R2R.SPLIT.val_unseen: R2R_val_unseen_enc.json
+2024-07-12 07:28:25,801   INFO  cfg.Dataset.R2R.SPLIT.test: R2R_test_enc.json
+2024-07-12 07:28:25,801   INFO  ----------- REVERIE -----------
+2024-07-12 07:28:25,801   INFO  cfg.Dataset.REVERIE.DIR: REVERIE
+2024-07-12 07:28:25,801   INFO  cfg.Dataset.REVERIE.bbox_file: BBoxes.json
+2024-07-12 07:28:25,801   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,801   INFO  cfg.Dataset.REVERIE.SPLIT.train: REVERIE_train_enc.json
+2024-07-12 07:28:25,801   INFO  cfg.Dataset.REVERIE.SPLIT.val_seen: REVERIE_val_seen_enc.json
+2024-07-12 07:28:25,801   INFO  cfg.Dataset.REVERIE.SPLIT.val_unseen: REVERIE_val_unseen_enc.json
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.REVERIE.SPLIT.test: REVERIE_test_enc.json
+2024-07-12 07:28:25,802   INFO  ----------- CVDN -----------
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.CVDN.DIR: CVDN
+2024-07-12 07:28:25,802   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.CVDN.SPLIT.train: train.json
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.CVDN.SPLIT.val_seen: val_seen.json
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.CVDN.SPLIT.val_unseen: val_unseen.json
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.CVDN.SPLIT.test: test_cleaned.json
+2024-07-12 07:28:25,802   INFO  ----------- SOON -----------
+2024-07-12 07:28:25,802   INFO  cfg.Dataset.SOON.DIR: SOON
+2024-07-12 07:28:25,803   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,803   INFO  cfg.Dataset.SOON.SPLIT.train: train_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:28:25,803   INFO  cfg.Dataset.SOON.SPLIT.val_seen: val_unseen_instrs_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:28:25,803   INFO  cfg.Dataset.SOON.SPLIT.val_unseen: val_unseen_house_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:28:25,803   INFO  cfg.Dataset.SOON.SPLIT.test: test_v2_enc.jsonl
+2024-07-12 07:28:25,803   INFO  ----------- ScanQA -----------
+2024-07-12 07:28:25,803   INFO  cfg.Dataset.ScanQA.DIR: ScanQA
+2024-07-12 07:28:25,803   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,803   INFO  cfg.Dataset.ScanQA.SPLIT.train: ScanQA_v1.0_train_reformat.json
+2024-07-12 07:28:25,804   INFO  cfg.Dataset.ScanQA.SPLIT.val_unseen: ScanQA_v1.0_val_reformat.json
+2024-07-12 07:28:25,804   INFO  cfg.Dataset.ScanQA.SPLIT.test_wo_obj: ScanQA_v1.0_test_wo_obj_reformat.json
+2024-07-12 07:28:25,804   INFO  cfg.Dataset.ScanQA.SPLIT.test_w_obj: ScanQA_v1.0_test_w_obj_reformat.json
+2024-07-12 07:28:25,804   INFO  ----------- EQA -----------
+2024-07-12 07:28:25,804   INFO  cfg.Dataset.EQA.DIR: EQA_MP3D
+2024-07-12 07:28:25,805   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,805   INFO  cfg.Dataset.EQA.SPLIT.val_unseen: eqa_val_enc.json
+2024-07-12 07:28:25,805   INFO  cfg.Dataset.EQA.ANSWER_VOCAB: eqa_answer_vocab.json
+2024-07-12 07:28:25,805   INFO  ----------- R2R_AUG -----------
+2024-07-12 07:28:25,805   INFO  cfg.Dataset.R2R_AUG.DIR: R2R
+2024-07-12 07:28:25,805   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,805   INFO  cfg.Dataset.R2R_AUG.SPLIT.train: R2R_prevalent_aug_train_enc.jsonl
+2024-07-12 07:28:25,805   INFO  ----------- REVERIE_AUG -----------
+2024-07-12 07:28:25,806   INFO  cfg.Dataset.REVERIE_AUG.DIR: REVERIE
+2024-07-12 07:28:25,806   INFO  cfg.Dataset.REVERIE_AUG.bbox_file: BBoxes.json
+2024-07-12 07:28:25,806   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,806   INFO  cfg.Dataset.REVERIE_AUG.SPLIT.train: REVERIE_speaker_aug_enc.jsonl
+2024-07-12 07:28:25,806   INFO  ----------- LLaVA -----------
+2024-07-12 07:28:25,806   INFO  cfg.Dataset.LLaVA.DIR: LLaVA
+2024-07-12 07:28:25,806   INFO  ----------- SPLIT -----------
+2024-07-12 07:28:25,806   INFO  cfg.Dataset.LLaVA.SPLIT.train: detail_23k.json
+2024-07-12 07:28:25,806   INFO  ----------- Pretrain -----------
+2024-07-12 07:28:25,806   INFO  cfg.Pretrain.SOURCE: ['R2R_AUG', 'REVERIE_AUG', 'R2R', 'REVERIE', 'SOON', 'CVDN', 'ScanQA']
+2024-07-12 07:28:25,806   INFO  cfg.Pretrain.Ratio: [20, 2, 1, 1, 1, 1, 1]
+2024-07-12 07:28:25,806   INFO  ----------- LOSS_COEF -----------
+2024-07-12 07:28:25,807   INFO  cfg.Pretrain.LOSS_COEF.R2R_AUG: 1
+2024-07-12 07:28:25,807   INFO  cfg.Pretrain.LOSS_COEF.REVERIE_AUG: 1
+2024-07-12 07:28:25,807   INFO  ----------- Multi -----------
+2024-07-12 07:28:25,807   INFO  cfg.Multi.SOURCE: ['R2R', 'REVERIE', 'CVDN', 'SOON', 'ScanQA', 'LLaVA']
+2024-07-12 07:28:25,807   INFO  cfg.Multi.Ratio: [20, 5, 1, 5, 5, 5]
+2024-07-12 07:28:25,807   INFO  ----------- LOSS_COEF -----------
+2024-07-12 07:28:25,807   INFO  ----------- Model -----------
+2024-07-12 07:28:25,807   INFO  cfg.Model.num_l_layers: 9
+2024-07-12 07:28:25,807   INFO  cfg.Model.num_pano_layers: 2
+2024-07-12 07:28:25,807   INFO  cfg.Model.num_x_layers: 4
+2024-07-12 07:28:25,807   INFO  cfg.Model.graph_sprels: True
+2024-07-12 07:28:25,808   INFO  cfg.Model.fusion: dynamic
+2024-07-12 07:28:25,808   INFO  cfg.Model.enc_full_graph: True
+2024-07-12 07:28:25,808   INFO  cfg.Model.expert_policy: spl
+2024-07-12 07:28:25,808   INFO  ----------- Optim -----------
+2024-07-12 07:28:25,808   INFO  ----------- val_max_action_len -----------
+2024-07-12 07:28:25,808   INFO  cfg.Optim.val_max_action_len.R2R: 15
+2024-07-12 07:28:25,808   INFO  cfg.Optim.val_max_action_len.REVERIE: 15
+2024-07-12 07:28:25,808   INFO  cfg.Optim.val_max_action_len.CVDN: 30
+2024-07-12 07:28:25,808   INFO  cfg.Optim.val_max_action_len.SOON: 20
+2024-07-12 07:28:25,808   INFO  cfg.Optim.val_max_action_len.EQA: 15
+2024-07-12 07:28:25,809   INFO  ----------- train_max_action_len -----------
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.R2R: 15
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.REVERIE: 15
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.CVDN: 15
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.SOON: 15
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.EQA: 15
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.R2R_AUG: 15
+2024-07-12 07:28:25,809   INFO  cfg.Optim.train_max_action_len.REVERIE_AUG: 15
+2024-07-12 07:28:32,874   INFO  [INFO] R2RDataset loaded with 1021 instructions, using splits: val_seen
+2024-07-12 07:28:32,874   INFO  
+- Dataset: load 1021 R2R samples
+- Dataset: load val_seen split: 1021 samples in total
+- Dataset: load val_seen split: 56 scans in total
+2024-07-12 07:28:32,874   INFO  R2R: 1021 samples loaded
+2024-07-12 07:28:33,062   INFO  Initialize the model from config.
+2024-07-12 07:30:42,553   INFO  model type: torch.bfloat16
+2024-07-12 07:30:42,559   INFO  *************** init model *************** 
+2024-07-12 07:30:49,923   INFO  Loading checkpoint from data/model_with_pretrain.pt
+2024-07-12 07:30:55,691   INFO  Ignore weight img_embeddings.obj_projector.0.weight: torch.Size([4096, 768])
+2024-07-12 07:30:55,691   INFO  Ignore weight img_embeddings.obj_projector.0.bias: torch.Size([4096])
+2024-07-12 07:30:55,691   INFO  Ignore weight img_embeddings.obj_projector.1.weight: torch.Size([4096])
+2024-07-12 07:30:55,691   INFO  Ignore weight img_embeddings.obj_projector.1.bias: torch.Size([4096])
+2024-07-12 07:30:56,932   INFO  <All keys matched successfully>
+2024-07-12 07:30:57,300   INFO  model initialized with 6770.32 M trainable parameters
+2024-07-12 07:30:58,329   INFO  Training in distributed mode : total_batch_size: 32
+2024-07-12 07:30:58,329   INFO  **************************** Test ****************************
+2024-07-12 07:30:58,331   INFO  ***** validate val_seen split on R2R task *****
+2024-07-12 07:31:58,549   INFO  eval 1024 predictions
+2024-07-12 07:31:59,335   INFO  
+[Eval] val_seen epoch 0
+
+ [Eval] dataset=[R2R] 
+, action_steps: 5.66, steps: 6.31, lengths: 12.54, nav_error: 2.82, oracle_error: 1.53
+[Eval] ||| sr: 72.85, oracle_sr: 82.13, spl: 68.30
+2024-07-12 07:33:51,619   INFO  **********************Start logging**********************
+2024-07-12 07:33:51,619   INFO  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+2024-07-12 07:33:51,619   INFO  data_dir         /root/mount/Matterport3DSimulator/thirdparty/NaviLLM/data
+2024-07-12 07:33:51,619   INFO  cfg_file         configs/multi.yaml
+2024-07-12 07:33:51,619   INFO  pretrained_model_name_or_path data/models/Vicuna-7B
+2024-07-12 07:33:51,619   INFO  off_batch_task   False
+2024-07-12 07:33:51,619   INFO  debug            False
+2024-07-12 07:33:51,620   INFO  seed             0
+2024-07-12 07:33:51,620   INFO  num_epochs       30
+2024-07-12 07:33:51,620   INFO  resume_from_checkpoint data/model_with_pretrain.pt
+2024-07-12 07:33:51,620   INFO  from_scratch     False
+2024-07-12 07:33:51,620   INFO  batch_size       4
+2024-07-12 07:33:51,620   INFO  val_batch_size   2
+2024-07-12 07:33:51,620   INFO  lr               1e-05
+2024-07-12 07:33:51,620   INFO  feat_dropout     0.4
+2024-07-12 07:33:51,620   INFO  num_warmup_steps 0
+2024-07-12 07:33:51,620   INFO  num_steps_per_epoch -1
+2024-07-12 07:33:51,620   INFO  gradient_accumulation_step 2
+2024-07-12 07:33:51,620   INFO  precision        amp_bf16
+2024-07-12 07:33:51,620   INFO  workers          0
+2024-07-12 07:33:51,620   INFO  world_size       8
+2024-07-12 07:33:51,620   INFO  local_rank       0
+2024-07-12 07:33:51,620   INFO  dist_url         env://
+2024-07-12 07:33:51,621   INFO  dist_backend     nccl
+2024-07-12 07:33:51,621   INFO  horovod          False
+2024-07-12 07:33:51,621   INFO  no_set_device_rank False
+2024-07-12 07:33:51,621   INFO  output_dir       build/eval
+2024-07-12 07:33:51,621   INFO  max_saved_checkpoints 0
+2024-07-12 07:33:51,621   INFO  save_ckpt_per_epochs 10
+2024-07-12 07:33:51,621   INFO  save_latest_states False
+2024-07-12 07:33:51,621   INFO  save_pred_results True
+2024-07-12 07:33:51,621   INFO  save_detail_results False
+2024-07-12 07:33:51,621   INFO  mode             test
+2024-07-12 07:33:51,622   INFO  stage            multi
+2024-07-12 07:33:51,622   INFO  ignoreid         -100
+2024-07-12 07:33:51,622   INFO  enable_og        False
+2024-07-12 07:33:51,622   INFO  enable_summarize False
+2024-07-12 07:33:51,622   INFO  enable_fgr2r     False
+2024-07-12 07:33:51,622   INFO  gen_loss_coef    1.0
+2024-07-12 07:33:51,622   INFO  obj_loss_coef    1.0
+2024-07-12 07:33:51,622   INFO  teacher_forcing_coef 1.0
+2024-07-12 07:33:51,622   INFO  fuse_obj         False
+2024-07-12 07:33:51,622   INFO  multi_endpoints  1
+2024-07-12 07:33:51,622   INFO  path_type        trusted_path
+2024-07-12 07:33:51,622   INFO  jsonpath         ../../tasks/R2R/data/R2R_val_unseen_enc.json
+2024-07-12 07:33:51,622   INFO  test_datasets    ['R2R']
+2024-07-12 07:33:51,622   INFO  validation_split val_unseen
+2024-07-12 07:33:51,623   INFO  do_sample        False
+2024-07-12 07:33:51,623   INFO  temperature      1.0
+2024-07-12 07:33:51,623   INFO  max_datapoints   None
+2024-07-12 07:33:51,623   INFO  rank             0
+2024-07-12 07:33:51,623   INFO  distributed      True
+2024-07-12 07:33:51,623   INFO  device           cuda:0
+2024-07-12 07:33:51,623   INFO  image_feat_size  1024
+2024-07-12 07:33:51,623   INFO  obj_feat_size    768
+2024-07-12 07:33:51,623   INFO  angle_feat_size  4
+2024-07-12 07:33:51,623   INFO  enc_full_graph   True
+2024-07-12 07:33:51,623   INFO  expert_policy    spl
+2024-07-12 07:33:51,623   INFO  num_pano_layers  2
+2024-07-12 07:33:51,623   INFO  ----------- Feature -----------
+2024-07-12 07:33:51,623   INFO  cfg.Feature.object_feature_type: 
+2024-07-12 07:33:51,623   INFO  cfg.Feature.angle_feat_size: 4
+2024-07-12 07:33:51,623   INFO  cfg.Feature.max_objects: 70
+2024-07-12 07:33:51,623   INFO  cfg.Feature.image_feat_size: 1024
+2024-07-12 07:33:51,623   INFO  ----------- feature_database -----------
+2024-07-12 07:33:51,624   INFO  cfg.Feature.feature_database.mp3d: eva_features/mp3d_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:33:51,624   INFO  cfg.Feature.feature_database.scan_qa: eva_features/scanqa_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:33:51,624   INFO  cfg.Feature.feature_database.coco: eva_features/coco_EVA02-CLIP-L-14-336.hdf5
+2024-07-12 07:33:51,624   INFO  cfg.Feature.obj_feat_size: 768
+2024-07-12 07:33:51,624   INFO  ----------- object_database -----------
+2024-07-12 07:33:51,624   INFO  cfg.Feature.object_database.reverie: obj_features/reverie_obj_feat
+2024-07-12 07:33:51,624   INFO  cfg.Feature.object_database.soon: obj_features/soon_obj_feat
+2024-07-12 07:33:51,624   INFO  ----------- Dataset -----------
+2024-07-12 07:33:51,624   INFO  ----------- R2R -----------
+2024-07-12 07:33:51,624   INFO  cfg.Dataset.R2R.DIR: R2R
+2024-07-12 07:33:51,624   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,624   INFO  cfg.Dataset.R2R.SPLIT.train: FGR2R_train.json
+2024-07-12 07:33:51,624   INFO  cfg.Dataset.R2R.SPLIT.val_seen: R2R_val_seen_enc.json
+2024-07-12 07:33:51,624   INFO  cfg.Dataset.R2R.SPLIT.val_unseen: R2R_val_unseen_enc.json
+2024-07-12 07:33:51,624   INFO  cfg.Dataset.R2R.SPLIT.test: R2R_test_enc.json
+2024-07-12 07:33:51,624   INFO  ----------- REVERIE -----------
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.REVERIE.DIR: REVERIE
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.REVERIE.bbox_file: BBoxes.json
+2024-07-12 07:33:51,625   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.REVERIE.SPLIT.train: REVERIE_train_enc.json
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.REVERIE.SPLIT.val_seen: REVERIE_val_seen_enc.json
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.REVERIE.SPLIT.val_unseen: REVERIE_val_unseen_enc.json
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.REVERIE.SPLIT.test: REVERIE_test_enc.json
+2024-07-12 07:33:51,625   INFO  ----------- CVDN -----------
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.CVDN.DIR: CVDN
+2024-07-12 07:33:51,625   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.CVDN.SPLIT.train: train.json
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.CVDN.SPLIT.val_seen: val_seen.json
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.CVDN.SPLIT.val_unseen: val_unseen.json
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.CVDN.SPLIT.test: test_cleaned.json
+2024-07-12 07:33:51,625   INFO  ----------- SOON -----------
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.SOON.DIR: SOON
+2024-07-12 07:33:51,625   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,625   INFO  cfg.Dataset.SOON.SPLIT.train: train_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.SOON.SPLIT.val_seen: val_unseen_instrs_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.SOON.SPLIT.val_unseen: val_unseen_house_enc_pseudo_obj_ade30k_label.jsonl
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.SOON.SPLIT.test: test_v2_enc.jsonl
+2024-07-12 07:33:51,626   INFO  ----------- ScanQA -----------
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.ScanQA.DIR: ScanQA
+2024-07-12 07:33:51,626   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.ScanQA.SPLIT.train: ScanQA_v1.0_train_reformat.json
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.ScanQA.SPLIT.val_unseen: ScanQA_v1.0_val_reformat.json
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.ScanQA.SPLIT.test_wo_obj: ScanQA_v1.0_test_wo_obj_reformat.json
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.ScanQA.SPLIT.test_w_obj: ScanQA_v1.0_test_w_obj_reformat.json
+2024-07-12 07:33:51,626   INFO  ----------- EQA -----------
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.EQA.DIR: EQA_MP3D
+2024-07-12 07:33:51,626   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.EQA.SPLIT.val_unseen: eqa_val_enc.json
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.EQA.ANSWER_VOCAB: eqa_answer_vocab.json
+2024-07-12 07:33:51,626   INFO  ----------- R2R_AUG -----------
+2024-07-12 07:33:51,626   INFO  cfg.Dataset.R2R_AUG.DIR: R2R
+2024-07-12 07:33:51,626   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,627   INFO  cfg.Dataset.R2R_AUG.SPLIT.train: R2R_prevalent_aug_train_enc.jsonl
+2024-07-12 07:33:51,627   INFO  ----------- REVERIE_AUG -----------
+2024-07-12 07:33:51,627   INFO  cfg.Dataset.REVERIE_AUG.DIR: REVERIE
+2024-07-12 07:33:51,627   INFO  cfg.Dataset.REVERIE_AUG.bbox_file: BBoxes.json
+2024-07-12 07:33:51,627   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,627   INFO  cfg.Dataset.REVERIE_AUG.SPLIT.train: REVERIE_speaker_aug_enc.jsonl
+2024-07-12 07:33:51,627   INFO  ----------- LLaVA -----------
+2024-07-12 07:33:51,627   INFO  cfg.Dataset.LLaVA.DIR: LLaVA
+2024-07-12 07:33:51,627   INFO  ----------- SPLIT -----------
+2024-07-12 07:33:51,627   INFO  cfg.Dataset.LLaVA.SPLIT.train: detail_23k.json
+2024-07-12 07:33:51,627   INFO  ----------- Pretrain -----------
+2024-07-12 07:33:51,627   INFO  cfg.Pretrain.SOURCE: ['R2R_AUG', 'REVERIE_AUG', 'R2R', 'REVERIE', 'SOON', 'CVDN', 'ScanQA']
+2024-07-12 07:33:51,627   INFO  cfg.Pretrain.Ratio: [20, 2, 1, 1, 1, 1, 1]
+2024-07-12 07:33:51,628   INFO  ----------- LOSS_COEF -----------
+2024-07-12 07:33:51,628   INFO  cfg.Pretrain.LOSS_COEF.R2R_AUG: 1
+2024-07-12 07:33:51,628   INFO  cfg.Pretrain.LOSS_COEF.REVERIE_AUG: 1
+2024-07-12 07:33:51,628   INFO  ----------- Multi -----------
+2024-07-12 07:33:51,628   INFO  cfg.Multi.SOURCE: ['R2R', 'REVERIE', 'CVDN', 'SOON', 'ScanQA', 'LLaVA']
+2024-07-12 07:33:51,628   INFO  cfg.Multi.Ratio: [20, 5, 1, 5, 5, 5]
+2024-07-12 07:33:51,628   INFO  ----------- LOSS_COEF -----------
+2024-07-12 07:33:51,628   INFO  ----------- Model -----------
+2024-07-12 07:33:51,628   INFO  cfg.Model.num_l_layers: 9
+2024-07-12 07:33:51,628   INFO  cfg.Model.num_pano_layers: 2
+2024-07-12 07:33:51,628   INFO  cfg.Model.num_x_layers: 4
+2024-07-12 07:33:51,628   INFO  cfg.Model.graph_sprels: True
+2024-07-12 07:33:51,628   INFO  cfg.Model.fusion: dynamic
+2024-07-12 07:33:51,628   INFO  cfg.Model.enc_full_graph: True
+2024-07-12 07:33:51,628   INFO  cfg.Model.expert_policy: spl
+2024-07-12 07:33:51,628   INFO  ----------- Optim -----------
+2024-07-12 07:33:51,628   INFO  ----------- val_max_action_len -----------
+2024-07-12 07:33:51,628   INFO  cfg.Optim.val_max_action_len.R2R: 15
+2024-07-12 07:33:51,628   INFO  cfg.Optim.val_max_action_len.REVERIE: 15
+2024-07-12 07:33:51,628   INFO  cfg.Optim.val_max_action_len.CVDN: 30
+2024-07-12 07:33:51,629   INFO  cfg.Optim.val_max_action_len.SOON: 20
+2024-07-12 07:33:51,629   INFO  cfg.Optim.val_max_action_len.EQA: 15
+2024-07-12 07:33:51,629   INFO  ----------- train_max_action_len -----------
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.R2R: 15
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.REVERIE: 15
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.CVDN: 15
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.SOON: 15
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.EQA: 15
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.R2R_AUG: 15
+2024-07-12 07:33:51,629   INFO  cfg.Optim.train_max_action_len.REVERIE_AUG: 15
+2024-07-12 07:33:53,244   INFO  [INFO] R2RDataset loaded with 2349 instructions, using splits: val_unseen
+2024-07-12 07:33:53,245   INFO  
+- Dataset: load 2349 R2R samples
+- Dataset: load val_unseen split: 2349 samples in total
+- Dataset: load val_unseen split: 11 scans in total
+2024-07-12 07:33:53,245   INFO  R2R: 2349 samples loaded
+2024-07-12 07:33:53,345   INFO  Initialize the model from config.
+2024-07-12 07:35:24,436   INFO  model type: torch.bfloat16
+2024-07-12 07:35:24,436   INFO  *************** init model *************** 
+2024-07-12 07:35:32,211   INFO  Loading checkpoint from data/model_with_pretrain.pt
+2024-07-12 07:35:38,535   INFO  Ignore weight img_embeddings.obj_projector.0.weight: torch.Size([4096, 768])
+2024-07-12 07:35:38,535   INFO  Ignore weight img_embeddings.obj_projector.0.bias: torch.Size([4096])
+2024-07-12 07:35:38,535   INFO  Ignore weight img_embeddings.obj_projector.1.weight: torch.Size([4096])
+2024-07-12 07:35:38,535   INFO  Ignore weight img_embeddings.obj_projector.1.bias: torch.Size([4096])
+2024-07-12 07:35:40,031   INFO  <All keys matched successfully>
+2024-07-12 07:35:40,611   INFO  model initialized with 6770.32 M trainable parameters
+2024-07-12 07:35:56,274   INFO  Training in distributed mode : total_batch_size: 32
+2024-07-12 07:35:56,275   INFO  **************************** Test ****************************
+2024-07-12 07:35:56,276   INFO  ***** validate val_unseen split on R2R task *****
+2024-07-12 07:38:16,377   INFO  eval 2352 predictions
+2024-07-12 07:38:16,486   INFO  
+[Eval] val_unseen epoch 0
+
+ [Eval] dataset=[R2R] 
+, action_steps: 5.90, steps: 6.74, lengths: 13.11, nav_error: 3.47, oracle_error: 1.88
+[Eval] ||| sr: 67.39, oracle_sr: 77.68, spl: 59.09
