@@ -12,6 +12,8 @@ from pathlib import Path
 
 
 def random_seed(seed=0, rank=0):
+    OVERRIDE_SEED = 0
+    seed = OVERRIDE_SEED
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
