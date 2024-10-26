@@ -11,9 +11,7 @@ from .common_utils import create_logger, log_config_to_file
 from pathlib import Path
 
 
-def random_seed(seed=0, rank=0):
-    OVERRIDE_SEED = 0
-    seed = OVERRIDE_SEED
+def set_seed(seed=0):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)

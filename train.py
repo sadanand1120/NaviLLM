@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict
 import torch.nn as nn
 from tools.common_utils import all_gather
-from tools.parser import read_args, random_seed
+from tools.parser import read_args, set_seed
 from tasks.loaders import create_dataloaders
 from tasks.feature_db import create_feature_db, create_object_feature_db
 from models.nav_model import NavModel
@@ -208,7 +208,8 @@ def calc_overall_score(results, cfg):
 
 def main():
     args, global_cfg, logger, device_id = read_args()
-    random_seed(args.seed + args.rank)
+    # random_seed(args.seed + args.rank)
+    set_seed(args.seed)
 
     ##################### DATASET #####################
     feat_db = create_feature_db(global_cfg.Feature.feature_database, global_cfg.Feature.image_feat_size, args)
