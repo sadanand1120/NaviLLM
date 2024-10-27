@@ -4,14 +4,14 @@ from typing import Optional, List, Union, Tuple
 from transformers import OPTForCausalLM, LlamaForCausalLM, AutoTokenizer, LlamaTokenizer, LlamaConfig
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.generation.logits_process import LogitsProcessor
-from tools.trie import Trie
+from thirdparty.NaviLLM.tools.trie import Trie
 
 
 class TrieLogitsProcessor(LogitsProcessor):
     def __init__(self, trie: Trie):
         self.node_states = None
         self.trie = trie
-    
+
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
         batch_size = input_ids.shape[0]
         if self.node_states is None:
@@ -20,12 +20,12 @@ class TrieLogitsProcessor(LogitsProcessor):
             for bn in range(batch_size):
                 w = input_ids[bn, -1].item()
                 self.node_states[bn] = self.trie.get_next_node(self.node_states[bn], w)
-        
+
         masks = torch.zeros_like(scores, dtype=torch.bool).to(scores.device)
         for bn in range(batch_size):
             next_layer = self.trie.get_child_index(self.node_states[bn])
             masks[bn][next_layer] = True
-        
+
         scores = scores.masked_fill(~masks, float('-inf'))
         return scores
 
@@ -52,7 +52,6 @@ class ModifiedLM:
         # llama-7b dim=4096, bloom dim=1024,
         self.hidden_size = self.config.hidden_size
 
-
     def init_tokenizer(self, pretrained_model_name_or_path: str):
         self.tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path, padding_side="left", truncation_side='left') if not isinstance(self.config, LlamaConfig) else LlamaTokenizer.from_pretrained(pretrained_model_name_or_path, padding_side="left", truncation_side='left')
 
@@ -71,10 +70,10 @@ class ModifiedLM:
         self.obj_token_id = self.tokenizer.encode("".join(self.obj_token), add_special_tokens=False)
         self.cls_token_id = self.tokenizer.encode("".join(self.cls_token), add_special_tokens=False)
         self.special_token_ids = self.cand_token_id + self.hist_token_id + self.obj_token_id + self.cls_token_id
-        
+
         self.resize_token_embeddings(len(self.tokenizer))
 
-    def tokenize(self, text: str, add_special_tokens: bool=True):
+    def tokenize(self, text: str, add_special_tokens: bool = True):
         batch_text = self.tokenizer(
             text,
             max_length=1024,
@@ -87,13 +86,13 @@ class ModifiedLM:
         return batch_text
 
     def forward(
-        self, 
+        self,
         input_ids,
-        attention_mask, 
+        attention_mask,
         labels=None,
-        cand_vis=None, 
-        hist_vis=None, 
-        obj_vis=None, 
+        cand_vis=None,
+        hist_vis=None,
+        obj_vis=None,
         **kwargs
     ):
 
@@ -144,16 +143,16 @@ class ModifiedLM:
             hidden_states=hidden_states,    # only store the last hidden states
             attentions=outputs.attentions,
         )
-    
+
 
 class ModifiedOPTForCasualLM(ModifiedLM, OPTForCausalLM):
     def __init__(self, config, extra_config):
         OPTForCausalLM.__init__(self, config)
         ModifiedLM.__init__(self, extra_config)
-    
+
     def get_encoder(self):
         return self.model.decoder
-    
+
     def prepare_inputs_for_generation(
         self, input_ids, past_key_values=None, attention_mask=None, inputs_embeds=None, cand_vis=None, hist_vis=None, obj_vis=None, **kwargs
     ):
@@ -172,12 +171,11 @@ class ModifiedOPTForCasualLM(ModifiedLM, OPTForCausalLM):
         return model_inputs
 
 
-
 class ModifiedLlamaForCausalLM(ModifiedLM, LlamaForCausalLM):
     def __init__(self, config, extra_config):
         LlamaForCausalLM.__init__(self, config)
         ModifiedLM.__init__(self, extra_config)
-    
+
     def get_encoder(self):
         return self.model
 

@@ -1,5 +1,5 @@
 import copy
-from tools.common_utils import get_dist_info
+from thirdparty.NaviLLM.tools.common_utils import get_dist_info
 import torch
 import torch.distributed as dist
 from typing import List, Dict, Tuple, Union, Iterator
@@ -10,12 +10,12 @@ from .agents import load_agent
 
 
 def create_dataloaders(args, config, logger, training, device, feat_db=None, obj_feat_db=None, stage="multi"):
-    if training==False and stage=='pretrain':
+    if training == False and stage == 'pretrain':
         return None, None
 
     dataset_cfg = copy.deepcopy(config.Dataset)
     dataset_cfg.update(
-        config.Pretrain if stage=="pretrain" else config.Multi
+        config.Pretrain if stage == "pretrain" else config.Multi
     )
     dataset_cfg.update(config.Feature)
 
@@ -38,7 +38,7 @@ def create_dataloaders(args, config, logger, training, device, feat_db=None, obj
             task_feat_db = feat_db["coco"]
         else:
             raise NotImplementedError
-        
+
         # assign object database
         if args.enable_og:
             if task_name in ["REVERIE", "REVERIE_AUG"]:
@@ -51,7 +51,6 @@ def create_dataloaders(args, config, logger, training, device, feat_db=None, obj
             task_obj_feat_db = None
 
         dataset.init_feat_db(feat_db=task_feat_db, obj_feat_db=task_obj_feat_db)
-
 
         logger.info(f"{task_name}: {len(dataset)} samples loaded")
 
@@ -69,7 +68,6 @@ def create_dataloaders(args, config, logger, training, device, feat_db=None, obj
         # load agents
         agents[task_name] = load_agent(task_name.lower(), args, getattr(dataset, "shortest_distances", None), getattr(dataset, "shortest_paths", None))
 
-
     if training:
         meta_loader = MetaLoader(
             dataloaders,
@@ -80,7 +78,7 @@ def create_dataloaders(args, config, logger, training, device, feat_db=None, obj
         )
         meta_loader = PrefetchLoader(meta_loader, device)
 
-        if args.num_steps_per_epoch!=-1:
+        if args.num_steps_per_epoch != -1:
             meta_loader.num_batches = args.num_steps_per_epoch
     else:
         return dataloaders, agents
@@ -105,7 +103,7 @@ def build_dataloader(dataset, distributed, training, batch_size, num_workers):
             sampler = SequentialSampler(dataset)
 
         size = torch.cuda.device_count() if torch.cuda.is_available() else 1
-        pre_epoch = lambda e: None
+        def pre_epoch(e): return None
 
         # DataParallel: scale the batch size by the number of GPUs
         # if size > 1:
@@ -146,7 +144,7 @@ class MetaLoader:
                 l, r, p = l
             elif isinstance(l, DataLoader):
                 r = 1
-                p = lambda e: None
+                def p(e): return None
             else:
                 raise ValueError()
             self.names.append(n)
@@ -162,7 +160,7 @@ class MetaLoader:
         self.sampling_ratios = torch.tensor(ratios).float().to(self.device)
         self.distributed = distributed
         self.step = 0
-        self.epoch_id = 0  
+        self.epoch_id = 0
 
     def get_dataset(self, name):
         return self.name2loader[name].dataset
@@ -212,6 +210,7 @@ class PrefetchLoader(object):
     """
     overlap compute and cuda data transfer
     """
+
     def __init__(self, loader, device: torch.device):
         self.loader = loader
         self.device = device
@@ -247,4 +246,3 @@ class PrefetchLoader(object):
     def __getattr__(self, name):
         method = self.loader.__getattribute__(name)
         return method
-

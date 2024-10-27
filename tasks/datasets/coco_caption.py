@@ -15,7 +15,7 @@ class COCOCaptionDataset(LLaVADataset):
         self.alldata = []
         with open(path) as f:
             data = json.load(f)
-        
+
             for item in data:
                 if self.training:
                     for sent in item["sentences"]:
@@ -23,7 +23,7 @@ class COCOCaptionDataset(LLaVADataset):
                             "sentid": sent["sentid"],
                             "image": item["filename"].split("_")[-1],
                             "input": "What is the caption of this image?",
-                            "label": sent["raw"]+"</s>",
+                            "label": sent["raw"] + "</s>",
                         })
                 else:
                     self.alldata.append({
@@ -37,7 +37,7 @@ class COCOCaptionDataset(LLaVADataset):
             self.alldata = self.alldata[:self.max_datapoints]
         self.logger.info(f"There are totally {len(self.alldata)} datapoints loaded.")
 
-    def __getitem__(self, index:int) -> Dict[str, Any]:
+    def __getitem__(self, index: int) -> Dict[str, Any]:
         item = copy.deepcopy(self.alldata[index])
 
         # load image
@@ -46,7 +46,7 @@ class COCOCaptionDataset(LLaVADataset):
             image_path = os.path.join(self.config.coco_caption.IMAGE_DIR, 'val2017', item["image"])
 
         image = Image.open(image_path).convert('RGB')
-        
+
         if self.training:
             data_dict = {
                 "sentid": item["sentid"],
@@ -60,18 +60,18 @@ class COCOCaptionDataset(LLaVADataset):
                 "image": image,
                 "input": item["input"],
                 "refs": item["refs"]
-            } 
-        
+            }
+
         return data_dict
 
     def eval_metrics(self, preds: List[Dict[str, Any]], logger, name: str) -> Dict[str, float]:
         refs = {}
         for item in self.alldata:
             refs[item["imgid"]] = item["refs"]
-        
-        gen = {item['imgid']:item['outputs'] for item in preds}
 
-        from tools.evaluation.bleu import Bleu
+        gen = {item['imgid']: item['outputs'] for item in preds}
+
+        from thirdparty.NaviLLM.tools.evaluation.bleu import Bleu
         bleu_score = Bleu()
 
         score, scores = bleu_score.compute_score(refs, gen)

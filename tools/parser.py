@@ -9,6 +9,7 @@ from easydict import EasyDict
 from .distributed import world_info_from_env, init_distributed_device
 from .common_utils import create_logger, log_config_to_file
 from pathlib import Path
+from easydict import EasyDict as edict
 
 
 def set_seed(seed=0):
@@ -105,7 +106,6 @@ def read_args():
     parser.add_argument("--do_sample", action="store_true", help="do_sample in evaluation")
     parser.add_argument("--temperature", type=float, default=1.)
 
-
     # others
     parser.add_argument(
         "--max_datapoints",
@@ -155,3 +155,80 @@ def read_args():
         args.resume_from_checkpoint = state_path
 
     return args, global_cfg, logger, device_id
+
+
+def read_args_manual(**kwargs):
+    args = edict({
+        'data_dir': 'data',
+        'cfg_file': None,
+        'pretrained_model_name_or_path': None,
+        'off_batch_task': False,
+        'debug': False,
+        'seed': 0,
+        'num_epochs': 30,
+        'resume_from_checkpoint': None,
+        'from_scratch': False,
+        'batch_size': 1,
+        'val_batch_size': 2,
+        'lr': 1e-5,
+        'feat_dropout': 0.4,
+        'num_warmup_steps': 0,
+        'num_steps_per_epoch': -1,
+        'gradient_accumulation_step': 2,
+        'precision': 'fp32',
+        'workers': 0,
+        'output_dir': None,
+        'max_saved_checkpoints': 0,
+        'save_ckpt_per_epochs': 10,
+        'save_latest_states': False,
+        'save_pred_results': False,
+        'save_detail_results': False,
+        'mode': 'test',
+        'stage': None,
+        'ignoreid': -100,
+        'enable_og': False,
+        'enable_summarize': False,
+        'enable_fgr2r': False,
+        'gen_loss_coef': 1.,
+        'obj_loss_coef': 1.,
+        'teacher_forcing_coef': 1.,
+        'fuse_obj': False,
+        'multi_endpoints': 1,
+        'path_type': 'trusted_path',
+        'jsonpath': None,
+        'test_datasets': None,
+        'validation_split': 'val_unseen',
+        'do_sample': False,
+        'temperature': 1.,
+        'max_datapoints': None,
+        'distributed': False,
+        'rank': 0,
+        'do_set_individ_seeds': False,
+    })
+
+    # Override defaults with passed named arguments
+    for key, value in kwargs.items():
+        args[key] = value
+    global_cfg = EasyDict(yaml.safe_load(open(str(Path(args.cfg_file).resolve()))))
+    args.data_dir = Path(args.data_dir).resolve()
+    args.image_feat_size = global_cfg.Feature.image_feat_size
+    args.obj_feat_size = global_cfg.Feature.obj_feat_size
+    args.angle_feat_size = global_cfg.Feature.angle_feat_size
+    args.enc_full_graph = global_cfg.Model.enc_full_graph
+    args.expert_policy = global_cfg.Model.expert_policy
+    args.num_pano_layers = global_cfg.Model.num_pano_layers
+    os.makedirs(args.output_dir, exist_ok=True)
+    assert args.mode == 'test'
+    log_file = Path(args.output_dir) / 'log.txt'
+    logger = create_logger(log_file)
+    logger.info('**********************Start logging**********************')
+    for key, val in vars(args).items():
+        logger.info('{:16} {}'.format(key, val))
+    log_config_to_file(global_cfg, logger=logger)
+
+    if os.path.exists(os.path.join(args.output_dir, "latest_states.pt")):
+        state_path = os.path.join(args.output_dir, "latest_states.pt")
+        logger.info("Resume checkpoint from {}".format(state_path))
+        args.resume_from_checkpoint = state_path
+
+    return args, global_cfg, logger

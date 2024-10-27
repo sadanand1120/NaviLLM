@@ -3,16 +3,17 @@ import numpy as np
 import torch
 from tqdm import tqdm
 from torch.nn.utils.rnn import pad_sequence
-from models.ops import pad_tensors_wgrad
-from models.graph_utils import calculate_vp_rel_pos_fts, get_angle_fts
+from thirdparty.NaviLLM.models.ops import pad_tensors_wgrad
+from thirdparty.NaviLLM.models.graph_utils import calculate_vp_rel_pos_fts, get_angle_fts
 from .base_agent import BaseAgent
 
 import numpy as np
 import torch
 from collections import defaultdict
 from contextlib import nullcontext
-from models.graph_utils import GraphMap
+from thirdparty.NaviLLM.models.graph_utils import GraphMap
 from typing import List
+
 
 def pad_tensors(tensors, lens=None, pad=0):
     """B x [T, ...]"""
@@ -51,6 +52,7 @@ def gen_seq_masks(seq_lens, max_len=None):
     masks = masks < seq_lens.reshape(-1, 1)
     return masks
 
+
 def get_results(pred_results, detailed_output=False):
     pred_output = []
     for k, v in pred_results.items():
@@ -65,7 +67,7 @@ def get_results(pred_results, detailed_output=False):
                 'oracle_pred_answer': v.get('oracle_pred_answer', ''),
                 'gt_answer': v['answer'],
             })
-        
+
         # obj nav
         if 'pred_objid' in v:
             ret.update({
@@ -111,9 +113,9 @@ class MP3DAgent(BaseAgent):
                 cand_vpids.append(cc['viewpointId'])
                 used_viewidxs.add(cc['pointId'])
             # non cand views
-            view_img_fts.extend([x[:self.args.image_feat_size] for k, x \
+            view_img_fts.extend([x[:self.args.image_feat_size] for k, x
                                  in enumerate(ob['feature']) if k not in used_viewidxs])
-            view_ang_fts.extend([x[self.args.image_feat_size:] for k, x \
+            view_ang_fts.extend([x[self.args.image_feat_size:] for k, x
                                  in enumerate(ob['feature']) if k not in used_viewidxs])
             nav_types.extend([0] * (36 - len(used_viewidxs)))
             # combine cand views and noncand views
@@ -159,9 +161,9 @@ class MP3DAgent(BaseAgent):
                 cand_vpids.append(cc['viewpointId'])
                 used_viewidxs.add(cc['pointId'])
             # non cand views
-            view_img_fts.extend([x[:self.args.image_feat_size] for k, x \
+            view_img_fts.extend([x[:self.args.image_feat_size] for k, x
                                  in enumerate(ob['feature']) if k not in used_viewidxs])
-            view_ang_fts.extend([x[self.args.image_feat_size:] for k, x \
+            view_ang_fts.extend([x[self.args.image_feat_size:] for k, x
                                  in enumerate(ob['feature']) if k not in used_viewidxs])
             nav_types.extend([0] * (36 - len(used_viewidxs)))
             # combine cand views and noncand views
@@ -191,10 +193,10 @@ class MP3DAgent(BaseAgent):
 
         ret = {
             'view_img_fts': batch_view_img_fts,
-            'loc_fts': batch_loc_fts, 
+            'loc_fts': batch_loc_fts,
             'nav_types': batch_nav_types,
-            'view_lens': batch_view_lens, 
-            'cand_vpids': batch_cand_vpids, 
+            'view_lens': batch_view_lens,
+            'cand_vpids': batch_cand_vpids,
         }
 
         if has_obj:
@@ -210,7 +212,7 @@ class MP3DAgent(BaseAgent):
             })
 
         return ret
-    
+
     def panorama_feature_variable_12views(self, obs):
         batch_view_img_fts = []
         batch_loc_fts = []
@@ -219,20 +221,19 @@ class MP3DAgent(BaseAgent):
         batch_cand_vpids = []
 
         for i, ob in enumerate(obs):
-            view_img_fts = [x[:self.args.image_feat_size]  for k,x in enumerate(ob['feature'])]
+            view_img_fts = [x[:self.args.image_feat_size] for k, x in enumerate(ob['feature'])]
             view_img_fts = np.stack(view_img_fts, 0)  # (n_views, dim_ft)
             view_ang_fts = [x[self.args.image_feat_size:] for k, x in enumerate(ob['feature'])]
             view_box_fts = np.array([[1, 1, 1]] * len(view_img_fts)).astype(np.float32)
             view_ang_fts = np.stack(view_ang_fts, 0)
-            view_loc_fts = np.concatenate([view_ang_fts, view_box_fts], 1)  
-            
+            view_loc_fts = np.concatenate([view_ang_fts, view_box_fts], 1)
+
             batch_view_img_fts.append(torch.from_numpy(view_img_fts))
             batch_loc_fts.append(torch.from_numpy(view_loc_fts))
             batch_view_lens.append(len(view_img_fts))
-            batch_nav_types.append(torch.LongTensor([1]*12+[0]*24))
-            batch_cand_vpids.append([None]*36)
+            batch_nav_types.append(torch.LongTensor([1] * 12 + [0] * 24))
+            batch_cand_vpids.append([None] * 36)
 
-        
         batch_view_img_fts = pad_tensors(batch_view_img_fts).cuda()
         batch_loc_fts = pad_tensors(batch_loc_fts).cuda()
         batch_nav_types = pad_sequence(batch_nav_types, batch_first=True, padding_value=0).cuda()
@@ -243,7 +244,7 @@ class MP3DAgent(BaseAgent):
             "loc_fts": batch_loc_fts,
             "nav_types": batch_nav_types,
             "view_lens": batch_view_lens,
-            "cand_vpids":  batch_cand_vpids
+            "cand_vpids": batch_cand_vpids
         }
         return ret
 
@@ -285,7 +286,7 @@ class MP3DAgent(BaseAgent):
             # add [stop] token at beginning
             vp_pos_fts = np.zeros((vp_img_embeds.size(1), 14), dtype=np.float32)
             vp_pos_fts[:, :7] = cur_start_pos_fts
-            vp_pos_fts[1:len(cur_cand_pos_fts)+1, 7:] = cur_cand_pos_fts
+            vp_pos_fts[1:len(cur_cand_pos_fts) + 1, 7:] = cur_cand_pos_fts
             batch_vp_pos_fts.append(torch.from_numpy(vp_pos_fts))
 
         batch_vp_pos_fts = pad_tensors(batch_vp_pos_fts).cuda()
@@ -297,9 +298,8 @@ class MP3DAgent(BaseAgent):
             'pano_masks': pano_masks,
             'vp_pos_fts': batch_vp_pos_fts,
             'vp_nav_masks': vp_nav_masks,
-            'vp_cand_vpids': [[None]+x for x in cand_vpids],
+            'vp_cand_vpids': [[None] + x for x in cand_vpids],
         }
-
 
     def nav_gmap_variable(self, obs, gmaps):
         # [stop] + gmap_vpids
@@ -336,7 +336,7 @@ class MP3DAgent(BaseAgent):
 
             gmap_pair_dists = np.zeros((len(gmap_vpids), len(gmap_vpids)), dtype=np.float32)
             for i in range(1, len(gmap_vpids)):
-                for j in range(i+1, len(gmap_vpids)):
+                for j in range(i + 1, len(gmap_vpids)):
                     gmap_pair_dists[i, j] = gmap_pair_dists[j, i] = \
                         gmap.graph.distance(gmap_vpids[i], gmap_vpids[j])
 
@@ -412,7 +412,7 @@ class MP3DAgent(BaseAgent):
                                 elif self.args.expert_policy == 'spl':
 
                                     dist = self.shortest_distances[scan][vpid][ob['gt_path'][-1]] \
-                                            + self.shortest_distances[scan][cur_vp][vpid]
+                                        + self.shortest_distances[scan][cur_vp][vpid]
                                 if dist < min_dist:
                                     min_dist = dist
                                     min_idx = j
@@ -420,7 +420,6 @@ class MP3DAgent(BaseAgent):
                         if min_idx == self.args.ignoreid:
                             print('scan %s: all vps are searched' % (scan))
         return torch.from_numpy(a).cuda()
-
 
     def teacher_action(self, obs, vpids, ended, visited_masks=None):
         """
@@ -444,7 +443,7 @@ class MP3DAgent(BaseAgent):
                         if j > 0 and ((visited_masks is None) or (not visited_masks[i][j])):
                             # dist = min([self.env.shortest_distances[scan][vpid][end_vp] for end_vp in ob['gt_end_vps']])
                             dist = self.shortest_distances[scan][vpid][ob['gt_path'][-1]] \
-                                    + self.shortest_distances[scan][cur_vp][vpid]
+                                + self.shortest_distances[scan][cur_vp][vpid]
                             if dist < min_dist:
                                 min_dist = dist
                                 min_idx = j
@@ -453,7 +452,6 @@ class MP3DAgent(BaseAgent):
                         print('scan %s: all vps are searched' % (scan))
 
         return torch.from_numpy(a).cuda()
-
 
     def teacher_object(self, obs):
         targets = np.zeros(len(obs), dtype=np.int64)
@@ -471,7 +469,6 @@ class MP3DAgent(BaseAgent):
                             break
         return torch.from_numpy(targets).cuda()
 
-
     def make_equiv_action(self, a_t, gmaps, obs, traj=None, env=None):
         """
         Interface between Panoramic view and Egocentric view
@@ -485,13 +482,13 @@ class MP3DAgent(BaseAgent):
                     prev_vp = traj[i]['path'][-2][-1]
                 else:
                     prev_vp = traj[i]['path'][-1][-2]
-                viewidx = self.scanvp_cands['%s_%s'%(ob['scan'], prev_vp)][action]
+                viewidx = self.scanvp_cands['%s_%s' % (ob['scan'], prev_vp)][action]
                 heading = (viewidx % 12) * math.radians(30)
                 elevation = (viewidx // 12 - 1) * math.radians(30)
                 env[i].sims[0].newEpisode([ob['scan']], [action], [heading], [elevation])
 
     def train(
-        self, 
+        self,
         name,
         batch,
         args,
@@ -504,9 +501,9 @@ class MP3DAgent(BaseAgent):
         instr_pred_metric=None,
         **kwargs
     ):
-        dataset_cfg = config.Pretrain if args.stage=='pretrain' else config.Multi
+        dataset_cfg = config.Pretrain if args.stage == 'pretrain' else config.Multi
         loss_coef = dataset_cfg.LOSS_COEF.get(name, 1.)
-        if args.stage=='pretrain' or step%2==0:
+        if args.stage == 'pretrain' or step % 2 == 0:
             #################### imitation learning ####################
             loss, _ = self.rollout(
                 args, name, config.Optim, batch,
@@ -526,7 +523,6 @@ class MP3DAgent(BaseAgent):
 
         return loss * args.gradient_accumulation_step
 
-
     def validate(
         self,
         name,
@@ -537,11 +533,14 @@ class MP3DAgent(BaseAgent):
         entropy_metric=None,
         instr_pred_metric=None,
     ):
+        if args.do_set_individ_seeds:
+            assert args.val_batch_size == 1, "Set individual seeds only for batch size 1"
+            from thirdparty.NaviLLM.tools.parser import set_seed
         results = {}
         trie = None
         looped = False
         dataset = loader.get_dataset()
-        pbar = tqdm(loader, disable=args.rank!=0)
+        pbar = tqdm(loader, disable=args.rank != 0)
         if name in ['EQA']:
             if hasattr(model, 'module'):
                 tokenizer = model.module.lang_model.tokenizer
@@ -556,10 +555,12 @@ class MP3DAgent(BaseAgent):
                 trie.insert(token_ids)
 
         for i, batch in enumerate(pbar):
+            if args.do_set_individ_seeds:
+                set_seed(args.seed)
             ml_loss, traj = self.rollout(
                 args, name, config.Optim, batch,
                 model=model, criterion=None, dataset=dataset,
-                feedback= "sample" if args.do_sample else "argmax", train_ml=None,
+                feedback="sample" if args.do_sample else "argmax", train_ml=None,
                 entropy_metric=entropy_metric, instr_pred_metric=None,
                 validate=True, trie=trie
             )
@@ -570,7 +571,7 @@ class MP3DAgent(BaseAgent):
                 else:
                     ml_loss = 0
                     results[s_traj['instr_id']] = s_traj
-    
+
             # Caldulate oracle prediction answer
             if name in ["EQA"]:
                 _, oracle_traj = self.rollout(
@@ -585,10 +586,9 @@ class MP3DAgent(BaseAgent):
 
             if looped:
                 break
-        
+
         preds = get_results(results)
         return preds
-
 
     def rollout(
         self,
@@ -683,7 +683,7 @@ class MP3DAgent(BaseAgent):
                 panorama_out = model('panorama', pano_inputs)
                 pano_embeds, pano_masks = panorama_out['pano_embeds'], panorama_out['pano_masks']
                 avg_pano_embeds = torch.sum(pano_embeds * pano_masks.unsqueeze(2), 1) / \
-                                torch.sum(pano_masks, 1, keepdim=True)  # [B, D=768]
+                    torch.sum(pano_masks, 1, keepdim=True)  # [B, D=768]
 
                 for i, gmap in enumerate(gmaps):
                     if not ended[i]:
@@ -719,9 +719,9 @@ class MP3DAgent(BaseAgent):
                     in_progress[0] = True
 
                 nav_inputs["prompts"] = self.prepare_prompts(
-                    "navigation", 
+                    "navigation",
                     nav_inputs,
-                    cls_token = model.module.lang_model.cls_token[0] if hasattr(model, 'module') else model.lang_model.cls_token[0]
+                    cls_token=model.module.lang_model.cls_token[0] if hasattr(model, 'module') else model.lang_model.cls_token[0]
                 )
                 nav_outs = model('navigation', nav_inputs)
 
@@ -745,7 +745,7 @@ class MP3DAgent(BaseAgent):
                         nav_targets = self.teacher_action(
                             obs, nav_vpids, ended,
                             visited_masks=nav_inputs['gmap_visited_masks'],
-                    )
+                        )
                     ############# Single-Step Loss #############
                     cnt_loss += criterion(nav_logits, nav_targets) * train_ml / batch_size / args.gradient_accumulation_step
 
@@ -761,7 +761,7 @@ class MP3DAgent(BaseAgent):
                     a_t = nav_targets  # teacher forcing
                 elif feedback == 'sample':
                     c = torch.distributions.Categorical(nav_probs.float())
-                    entropy_metric.accumulate(c.entropy().sum().item()/ batch_size)  # For log
+                    entropy_metric.accumulate(c.entropy().sum().item() / batch_size)  # For log
                     entropys.append(c.entropy())  # For optimization
                     a_t = c.sample().detach()
                 elif feedback == 'argmax':
@@ -783,7 +783,7 @@ class MP3DAgent(BaseAgent):
                     a_t_stop = [ob['viewpoint'] == ob['gt_path'][-1] for ob in obs]
                 else:
                     a_t_stop = a_t == 0
-                
+
                 ########### Object Prediction Sub-task ###########
                 if (data_type[0] in ['soon', 'reverie']) and args.enable_og and flag:
                     # graph representation
@@ -814,7 +814,7 @@ class MP3DAgent(BaseAgent):
                     nav_inputs["prompts"] = self.prepare_prompts(
                         "object_grounding",
                         nav_inputs,
-                        cls_token = model.module.lang_model.cls_token[0] if hasattr(model, 'module') else model.lang_model.cls_token[0]
+                        cls_token=model.module.lang_model.cls_token[0] if hasattr(model, 'module') else model.lang_model.cls_token[0]
                     )
                     obj_logits = model('object_grounding', nav_inputs)['obj_logits']
                     obj_targets = self.teacher_object(obs)
@@ -842,7 +842,7 @@ class MP3DAgent(BaseAgent):
                             })
 
                 ########### Fine-grained R2R Sub-task ###########
-                enable_fgr2r = (feedback == 'teacher') and (not flag) and (not a_t_stop[0]) and (data_type[0]=='r2r') and (not validate) and 'fg_instruction' in ob and args.enable_fgr2r
+                enable_fgr2r = (feedback == 'teacher') and (not flag) and (not a_t_stop[0]) and (data_type[0] == 'r2r') and (not validate) and 'fg_instruction' in ob and args.enable_fgr2r
                 if enable_fgr2r:
                     pano_inputs = self.panorama_feature_variable_12views(obs)
                     panorama_out = model('panorama', pano_inputs)
@@ -866,19 +866,19 @@ class MP3DAgent(BaseAgent):
                         lm_loss.backward()
                         instr_pred_metric.accumulate(lm_loss.detach().item() * args.gradient_accumulation_step)
                         ml_loss += lm_loss.detach()
-            
+
                 ########### Navigation Summarization Sub-task ###########
                 if data_type[0] == 'eqa':
                     enable_summarize = flag
                 elif data_type[0] in ['r2r', 'soon', 'reverie', 'r2r_aug', 'reverie_aug']:
-                    enable_summarize = (feedback == 'teacher' or feedback == 'argmax') and flag and args.enable_summarize and (not validate or args.mode=='test')
+                    enable_summarize = (feedback == 'teacher' or feedback == 'argmax') and flag and args.enable_summarize and (not validate or args.mode == 'test')
                 elif data_type[0] in ['cvdn']:
                     enable_summarize = False
                 else:
                     raise NotImplementedError
 
                 if enable_summarize:  # gen loss
-                    
+
                     pano_inputs = self.panorama_feature_variable_12views(obs)
                     panorama_out = model('panorama', pano_inputs)
                     pano_embeds, pano_masks = panorama_out['pano_embeds'], panorama_out['pano_masks']
@@ -889,7 +889,7 @@ class MP3DAgent(BaseAgent):
                             pano_inputs['view_lens'], pano_inputs['nav_types'],
                         )
                     )
-                    
+
                     nav_inputs['instruction'] = [ob["instruction"] for ob in obs]
                     nav_inputs['history'] = history
                     nav_inputs['hist_vis'] = hist_vis
@@ -962,7 +962,7 @@ class MP3DAgent(BaseAgent):
                     break
 
         return ml_loss, traj
-    
+
     def prepare_prompts(self, mode, batch, **kwargs):
         batch_size = len(batch["instruction"])
         if mode == "navigation":

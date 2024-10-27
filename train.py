@@ -8,13 +8,15 @@ from tqdm import tqdm
 from pathlib import Path
 from typing import Dict
 import torch.nn as nn
-from tools.common_utils import all_gather
-from tools.parser import read_args, set_seed
-from tasks.loaders import create_dataloaders
-from tasks.feature_db import create_feature_db, create_object_feature_db
-from models.nav_model import NavModel
-from tools.optims import dist_models, save_checkpoint
-from tools.trie import Trie
+from thirdparty.NaviLLM.tools.common_utils import all_gather
+from thirdparty.NaviLLM.tools.parser import read_args, set_seed, read_args_manual
+from thirdparty.NaviLLM.tasks.loaders import create_dataloaders
+from thirdparty.NaviLLM.tasks.feature_db import create_feature_db, create_object_feature_db
+from thirdparty.NaviLLM.models.nav_model import NavModel
+from thirdparty.NaviLLM.tools.optims import dist_models, save_checkpoint, minimal_dist_models
+from thirdparty.NaviLLM.tools.trie import Trie
+from tqdm import tqdm
+
 
 class Metrics(object):
     def __init__(self):
@@ -56,12 +58,12 @@ def train_one_epoch(
 
     pbar = tqdm(
         range(dataloaders.num_batches),
-        disable=args.rank!=0,
+        disable=args.rank != 0,
         total=total_training_steps,
         initial=(epoch * num_batches_per_epoch)
     )
-    
-    dataset_cfg = global_cfg.Pretrain if stage=='pretrain' else global_cfg.Multi
+
+    dataset_cfg = global_cfg.Pretrain if stage == 'pretrain' else global_cfg.Multi
     loss_stats = {k: Metrics() for k in dataset_cfg.SOURCE}
 
     for step, (name, batch) in enumerate(dataloaders):
@@ -85,7 +87,7 @@ def train_one_epoch(
         loss_metric.accumulate(loss.item())
         loss_stats[name].accumulate(loss.item())
 
-        if (step+1) % args.gradient_accumulation_step==0:
+        if (step + 1) % args.gradient_accumulation_step == 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), 40.)
             optimizer.step()
             optimizer.zero_grad()
@@ -107,7 +109,7 @@ def train_one_epoch(
             pbar.set_postfix(verbose_dict)
             pbar.update()
 
-        if step == num_batches_per_epoch-1:
+        if step == num_batches_per_epoch - 1:
             logger.info("***** train [{}] epoch *****".format(epoch))
             train_stat_str = 'Loss: %.2f\n' % loss_metric.average
             train_stat_str += "Instr_pred: %.2f\n" % instr_pred_metric.average
@@ -161,19 +163,36 @@ def val_one_epoch(
                     loss_str += '\n[Eval] ||| %s: %.2f' % (metric, val)
                 else:
                     loss_str += ', %s: %.2f' % (metric, val)
-        
-        if args.rank== 0 and args.save_pred_results:
+
+        if args.rank == 0 and args.save_pred_results:
             dataset.save_json(
-                all_preds, 
+                all_preds,
                 os.path.join(args.output_dir, f"{name}_{args.validation_split}.json"),
                 item_metrics=item_metrics if args.save_detail_results else None
             )
 
-
     logger.info(loss_str)
-    
+
     return task_results
 
+
+@torch.inference_mode()
+def minimal_val_one_epoch(args, global_cfg, model, dataloaders, agents, epoch, logger) -> Dict[str, Dict[str, float]]:
+    model.eval()
+    entropy_metric = Metrics()
+    loss_str = "\n[Eval] {} epoch {}\n".format(args.validation_split, epoch)
+    task_results = {}
+    for name, loader in dataloaders.items():
+        logger.info("***** validate {} split on {} task *****".format(args.validation_split, name))
+        dataset = dataloaders[name].get_dataset()
+        agent = agents[name]
+        preds = agent.validate(name, args, global_cfg, model, loader, entropy_metric=entropy_metric)
+        all_preds = all_gather(preds)
+        all_preds = merge_dist_results(all_preds)
+        if args.save_pred_results:
+            dataset.save_json(all_preds, os.path.join(args.output_dir, f"{name}_{args.validation_split}.json"), item_metrics=None)
+    logger.info(loss_str)
+    return task_results
 
 
 def merge_dist_results(results):
@@ -206,6 +225,19 @@ def calc_overall_score(results, cfg):
     return score
 
 
+def minimal_eval(**kwargs):
+    args, global_cfg, logger = read_args_manual(**kwargs)
+    set_seed(args.seed)
+    feat_db = create_feature_db(global_cfg.Feature.feature_database, global_cfg.Feature.image_feat_size, args)
+    obj_feat_db = create_object_feature_db(global_cfg.Feature.object_database, global_cfg.Feature.obj_feat_size, args)
+    val_dataloaders, val_agents = create_dataloaders(args, global_cfg, logger, training=False, device="cuda:0", feat_db=feat_db, obj_feat_db=obj_feat_db, stage="multi")
+    model = NavModel(args, logger, global_cfg.Model)
+    criterion = nn.CrossEntropyLoss(ignore_index=args.ignoreid, reduction='sum')
+    model, optimizer, resume_from_epoch, lr_scheduler = minimal_dist_models(args, model, logger, device="cuda:0")
+    logger.info("**************************** Testing ****************************")
+    results = minimal_val_one_epoch(args, global_cfg, model, val_dataloaders, val_agents, resume_from_epoch, logger)
+
+
 def main():
     args, global_cfg, logger, device_id = read_args()
     # random_seed(args.seed + args.rank)
@@ -232,7 +264,7 @@ def main():
     criterion = nn.CrossEntropyLoss(ignore_index=args.ignoreid, reduction='sum')
 
     model, optimizer, resume_from_epoch, lr_scheduler = dist_models(args, model, logger)
-    if args.mode=="test":
+    if args.mode == "test":
         logger.info("**************************** Test ****************************")
         results = val_one_epoch(
             args, global_cfg, model, optimizer, criterion, val_dataloaders, val_agents, resume_from_epoch, logger
@@ -253,7 +285,7 @@ def main():
                 args, global_cfg, model, optimizer, criterion, val_dataloaders, val_agents, epoch, logger
             )
 
-            if args.rank==0:
+            if args.rank == 0:
                 score = calc_overall_score(results, global_cfg)
                 history_scores.append(score)
                 should_save_checkpoint = False
@@ -262,16 +294,16 @@ def main():
                     best_results = results
                     best_score = score
                     should_save_checkpoint = args.max_saved_checkpoints > 0
-                
+
                 logger.info(f"Current Score: {score}")
                 logger.info(f"Best Score: {best_score}")
 
-                if args.stage=='multi':
+                if args.stage == 'multi':
                     # Save the best
                     if should_save_checkpoint:
                         if len(history_scores) > args.max_saved_checkpoints:
                             sorted_scores = sorted(enumerate(history_scores), key=lambda x: x[1], reverse=True)
-                            
+
                             remove_epoch = sorted_scores[args.max_saved_checkpoints][0]
                             remove_model_path = Path(args.output_dir) / f"epoch_{remove_epoch}.pt"
                             if os.path.exists(remove_model_path):
@@ -280,21 +312,21 @@ def main():
 
                         model_path = Path(args.output_dir) / f"epoch_{epoch}.pt"
                         save_checkpoint(model, model_path)
-              
-                elif args.stage=='pretrain' and (epoch+1)%args.save_ckpt_per_epochs==0:
+
+                elif args.stage == 'pretrain' and (epoch + 1) % args.save_ckpt_per_epochs == 0:
                     model_path = Path(args.output_dir) / f"pretrain_{epoch}.pt"
                     save_checkpoint(model, model_path)
 
-              
             if args.save_latest_states:
                 # Save the latest if args.save_latest_states is True
                 model_path = Path(args.output_dir) / f"latest.pt"
                 save_checkpoint(model, model_path, optimizer, epoch, save_states=True)
-        
+
         # print best results
         if args.rank == 0:
             logger.info(f"Best Results:")
             logger.info(best_results)
+
 
 if __name__ == '__main__':
     main()

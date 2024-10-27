@@ -12,9 +12,9 @@ from .mp3d_envs import (
     get_all_point_angle_feature, load_nav_graphs,
 )
 ERROR_MARGIN = 3.0
-from tools.evaluation.bleu import Bleu
-from tools.evaluation.rouge import Rouge
-from tools.evaluation.cider import Cider
+from thirdparty.NaviLLM.tools.evaluation.bleu import Bleu
+from thirdparty.NaviLLM.tools.evaluation.rouge import Rouge
+from thirdparty.NaviLLM.tools.evaluation.cider import Cider
 from .mp3d_dataset import MP3DDataset, get_anno_file_path
 
 
@@ -35,11 +35,9 @@ class EQADataset(MP3DDataset):
         with open(filename) as f:
             self.answer_vocab = json.load(f)
 
-
     def init_feat_db(self, feat_db, obj_feat_db=None):
         self.feat_db = feat_db
         self.obj_feat_db = obj_feat_db
-
 
     def load_data(self, anno_file, max_instr_len=200, split='train', debug=False):
         """
@@ -65,11 +63,10 @@ class EQADataset(MP3DDataset):
             new_data = new_data[:20]
 
         gt_trajs = {
-            x['instr_id']: (x['scan'], x['path']) \
+            x['instr_id']: (x['scan'], x['path'])
             for x in new_data if len(x['path']) > 1
         }
         return new_data, gt_trajs
-
 
     def get_obs(self, items, env, data_type=None):
         obs = []
@@ -104,7 +101,7 @@ class EQADataset(MP3DDataset):
                 'gt_path': item['path'],
                 'path_id': item['path_id'],
             }
-            if False: # ob['instr_id'] in self.gt_trajs:
+            if False:  # ob['instr_id'] in self.gt_trajs:
                 ob['distance'] = self.shortest_distances[ob['scan']][ob['viewpoint']][item['path'][-1]]
             else:
                 ob['distance'] = 0
@@ -139,7 +136,7 @@ class EQADataset(MP3DDataset):
 
             scan, gt_traj = self.gt_trajs[instr_id]
             traj_scores = self.eval_dis_item(scan, traj, gt_traj)
-          
+
             for k, v in traj_scores.items():
                 metrics[k].append(v)
             metrics['instr_id'].append(instr_id)
@@ -158,7 +155,7 @@ class EQADataset(MP3DDataset):
         # bleu_score = Bleu()
         # score, scores = bleu_score.compute_score(all_gt_ans, all_pred_ans)
         # for i, s in enumerate(score):
-        #     avg_metrics[f"bleu-{i+1}"] = s * 100        
+        #     avg_metrics[f"bleu-{i+1}"] = s * 100
 
         # rouge_score = Rouge()
         # score, compute_score = rouge_score.compute_score(all_gt_ans, all_pred_ans)
@@ -168,8 +165,8 @@ class EQADataset(MP3DDataset):
         # score, compute_score = cider_score.compute_score(all_gt_ans, all_pred_ans)
         # avg_metrics["cider"] = score * 100
         n_correct = 0
-        for pred in preds: 
-            if pred['pred_answer'] in all_gt_ans[pred["instr_id"]]: 
+        for pred in preds:
+            if pred['pred_answer'] in all_gt_ans[pred["instr_id"]]:
                 n_correct += 1
         avg_metrics["exact_match"] = n_correct / len(preds) * 100
 

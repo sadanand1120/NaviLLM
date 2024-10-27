@@ -7,10 +7,11 @@ from .llava import LLaVADataset
 import random
 import torch
 import numpy as np
-from tools.evaluation.bleu import Bleu
-from tools.evaluation.rouge import Rouge
-from tools.evaluation.cider import Cider
-from tools.evaluation.meteor import Meteor
+from thirdparty.NaviLLM.tools.evaluation.bleu import Bleu
+from thirdparty.NaviLLM.tools.evaluation.rouge import Rouge
+from thirdparty.NaviLLM.tools.evaluation.cider import Cider
+from thirdparty.NaviLLM.tools.evaluation.meteor import Meteor
+
 
 class ScanQADataset(LLaVADataset):
     name = "scanqa"
@@ -38,7 +39,7 @@ class ScanQADataset(LLaVADataset):
             self.alldata = self.alldata[:self.max_datapoints]
         self.logger.info(f"There are totally {len(self.alldata)} datapoints loaded.")
 
-    def __getitem__(self, index:int) -> Dict[str, Any]:
+    def __getitem__(self, index: int) -> Dict[str, Any]:
         item = copy.deepcopy(self.alldata[index])
 
         sampled_images = random.sample(item["image_info"], min(36, len(item["image_info"])))
@@ -60,18 +61,18 @@ class ScanQADataset(LLaVADataset):
 
     def eval_metrics(self, preds: List[Dict[str, Any]], logger, name: str) -> Tuple[Dict[str, float], Dict[str, List[float]]]:
         ret = {}
-        if self.split=='test':
+        if self.split == 'test':
             return ret
 
         refs = {}
         for item in self.alldata:
-            refs[item["question_id"]] = item["answers"]     
-        gen = {item['question_id']:item['generated_sentences'] for item in preds}
+            refs[item["question_id"]] = item["answers"]
+        gen = {item['question_id']: item['generated_sentences'] for item in preds}
 
         bleu_score = Bleu()
         score, scores = bleu_score.compute_score(refs, gen)
         for i, s in enumerate(score):
-            ret[f"bleu-{i+1}"] = s * 100        
+            ret[f"bleu-{i+1}"] = s * 100
 
         rouge_score = Rouge()
         score, compute_score = rouge_score.compute_score(refs, gen)
@@ -94,14 +95,14 @@ class ScanQADataset(LLaVADataset):
             else:
                 metrics["exact_match"].append(0.)
         ret["exact_match"] = n_correct / len(preds) * 100
-        
+
         return ret, metrics
-    
+
     def save_json(self, results, path, item_metrics=None):
         for item in results:
             item['answer_top10'] = item['generated_sentences']
             item['pred_bbox'] = []
             del item['generated_sentences']
-        
+
         with open(path, 'w') as f:
             json.dump(results, f)
