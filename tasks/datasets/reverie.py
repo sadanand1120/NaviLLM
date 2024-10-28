@@ -53,7 +53,7 @@ class REVERIEDataset(MP3DDataset):
                 new_item = dict(item)
 
                 if 'objId' in item:
-                    new_item['instr_id'] = '%s_%s_%s_%d' % ('reverie', str(item['path_id']), str(item['objId']), j)
+                    new_item['instr_id'] = f"reverie_{item['path_id']}_{item['objId']}_{j}"
                 else:
                     new_item['path_id'] = item['id']
                     new_item['instr_id'] = '%s_%s_%d' % ('reverie', item['id'], j)
