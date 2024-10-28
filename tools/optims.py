@@ -9,7 +9,7 @@ def check_checkpoint(args, model, optimizer, lr_scheduler, logger) -> int:
     if args.resume_from_checkpoint is not None:
         if args.rank == 0:
             logger.info(f"Loading checkpoint from {args.resume_from_checkpoint}")
-        checkpoint = torch.load(args.resume_from_checkpoint, map_location="cpu")
+        checkpoint = torch.load(args.resume_from_checkpoint, map_location="cpu", weights_only=True)
         model_state_dict = model.state_dict()
         state_disk = {k.replace('module.', ''): v for k, v in checkpoint['model_state_dict'].items()}
         update_model_state = {}

@@ -204,6 +204,7 @@ def read_args_manual(**kwargs):
         'distributed': False,
         'rank': 0,
         'do_set_individ_seeds': False,
+        'log_level': 'INFO',
     })
 
     # Override defaults with passed named arguments
@@ -220,7 +221,7 @@ def read_args_manual(**kwargs):
     os.makedirs(args.output_dir, exist_ok=True)
     assert args.mode == 'test'
     log_file = Path(args.output_dir) / 'log.txt'
-    logger = create_logger(log_file)
+    logger = create_logger(log_file=log_file, rank=args.rank, log_level=args.log_level)
     logger.info('**********************Start logging**********************')
     for key, val in vars(args).items():
         logger.info('{:16} {}'.format(key, val))
